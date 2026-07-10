@@ -1,0 +1,32 @@
+#!/bin/bash
+# Run all NSD download scripts. A failure in one script does not stop the others.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOWNLOAD_DIR="${SCRIPT_DIR}/download"
+
+SCRIPTS=(
+    download_imgs
+    download_roi_masks
+    download_fmri
+)
+
+failed=0
+
+for script in "${SCRIPTS[@]}"; do
+    echo "=== Running ${script} ==="
+    if bash "${DOWNLOAD_DIR}/${script}"; then
+        echo "[SUCCESS] ${script}"
+    else
+        code=$?
+        echo "[FAILED]  ${script} (exit code: ${code})"
+        failed=$((failed + 1))
+    fi
+    echo
+done
+
+if [[ "${failed}" -gt 0 ]]; then
+    echo "${failed} script(s) failed."
+    exit 1
+fi
+
+echo "All scripts completed successfully."

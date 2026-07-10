@@ -1,0 +1,45 @@
+#!/bin/bash
+# Download NSD fMRI beta maps (fsaverage, betas_fithrf_GLMdenoise_RR) for all 8 subjects.
+#
+# Source: s3://natural-scenes-dataset/nsddata_betas/ppdata/subj0N/fsaverage/betas_fithrf_GLMdenoise_RR/
+# Requires: AWS CLI (aws s3 cp --no-sign-request)
+#
+# Session counts per subject (subj01–08): 40, 40, 32, 30, 40, 32, 40, 30
+
+set -euo pipefail
+
+HEM=('lh' 'rh')
+SESSION_COUNTS=(40 40 32 30 40 32 40 30)
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/../../nsd_data/raw_fmri}"
+S3_PREFIX="s3://natural-scenes-dataset/nsddata_betas/ppdata"
+
+mkdir -p "${OUT_DIR}"
+
+for ((subj=1; subj<=8; subj++)); do
+    max_session=${SESSION_COUNTS[subj - 1]}
+    subj_dir="${OUT_DIR}/subj0${subj}"
+    mkdir -p "${subj_dir}"
+
+    echo "Subject ${subj}: downloading sessions 1-${max_session} (lh/rh)"
+
+    for ((ses=1; ses<=max_session; ses++)); do
+        ses_padded=$(printf '%02d' "${ses}")
+
+        for hem in "${HEM[@]}"; do
+            remote="${S3_PREFIX}/subj0${subj}/fsaverage/betas_fithrf_GLMdenoise_RR/${hem}.betas_session${ses_padded}.mgh"
+            local="${subj_dir}/${hem}.betas_session${ses_padded}.mgh"
+
+            if [[ -f "${local}" ]]; then
+                echo "  skip (exists): ${local}"
+                continue
+            fi
+
+            echo "  ${remote} -> ${local}"
+            aws s3 cp "${remote}" "${local}" --no-sign-request
+        done
+    done
+done
+
+echo "Done. Files saved under ${OUT_DIR}"
