@@ -45,7 +45,7 @@ bash data/scripts/run_all_downloads
 
 Download the pretrained encoder checkpoint from [Hugging Face](https://huggingface.co/RomanBeliy/Brain-IT):
 ```bash
-python data/scripts/download/download_checkpoints.py
+python data/scripts/download/download_encoder.py
 ```
 
 This places the encoder checkpoint in `results/saved_models/`.
@@ -77,9 +77,11 @@ Evaluate the encoder on the shared NSD test set (predictions + voxel correlation
 python inference/encoder_inference.py
 ```
 
+Step-by-step walkthrough: [`inference/encoder_inference.ipynb`](models/encoder_inference.ipynb).
+
 Predict fMRI for a custom image array (optional ROI / hemisphere):
 ```bash
-python inference/predict_fmri_for_images.py --images path/to/images.npy --subjects 1 2 5 8
+python inference/predict_fmri_for_images.py --images path/to/images.npy --subjects 1 2 5 7
 python inference/predict_fmri_for_images.py --images path/to/images.npy --region floc-faces --hemisphere both
 ```
 

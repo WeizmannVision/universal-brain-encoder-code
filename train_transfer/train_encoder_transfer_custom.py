@@ -131,6 +131,8 @@ writer = SummaryWriter("logs/tensorboard/encoder_exp/" + name)
 
 def main():
     print(f"Loading base model from {args.base_model}")
+    torch.hub.set_dir("data/external_models/torch_hub/")
+    torch.hub.load("facebookresearch/dinov2", "dinov2_vits14_reg")  # needed so encoder model can load
     model = torch.load(args.base_model)
     for param in model.parameters():
         param.requires_grad = False

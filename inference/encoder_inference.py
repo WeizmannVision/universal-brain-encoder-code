@@ -25,7 +25,7 @@ TRANSFER_MODEL_DIR = "results/saved_models/transfer/"
 DEFAULT_OUTPUT_DIR = "results/encoder_predictions/"
 
 INNER_CH = 128
-DEFAULT_SUBJECTS = [1, 2, 5, 8]
+DEFAULT_SUBJECTS = [1, 2, 5, 7]
 
 IMAGENET_MEAN = np.array([0.485, 0.456, 0.406]).reshape([1, 1, 3]).astype(float)
 IMAGENET_STD = np.array([0.229, 0.224, 0.225]).reshape([1, 1, 3]).astype(float)
@@ -211,6 +211,8 @@ def main():
     images = load_images(args, fmri_data)
 
     print(f"Loading encoder model from {args.model}...")
+    torch.hub.set_dir("data/external_models/torch_hub/")
+    torch.hub.load("facebookresearch/dinov2", "dinov2_vits14_reg")  # needed so encoder model can load
     encoder_model = torch.load(args.model).eval().to(device)
     fmri = predict_fmri(encoder_model, images, num_voxels_subjects, args.subjects, device)
     save_predictions(fmri, args.output_dir)

@@ -105,6 +105,8 @@ def main():
     images = np.load(args.images)
 
     print(f"Loading encoder model from {args.model}...")
+    torch.hub.set_dir("data/external_models/torch_hub/")
+    torch.hub.load("facebookresearch/dinov2", "dinov2_vits14_reg")  # needed so encoder model can load
     encoder_model = torch.load(args.model).eval().to(device)
 
     fmri = predict_fmri_for_images(

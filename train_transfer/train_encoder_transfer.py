@@ -79,8 +79,7 @@ train_ind[val_ind] = False
 
 embeds_single = embeds[type_sample == 1]
 idx = args.subject - 1
-end = np.cumsum(num_voxels_all)
-start = end - num_voxels_all
+n_vox = int(num_voxels_all[idx])
 
 embeds_single_train = embeds_single[train_ind]
 single_sub_fmri_train = single_sub_fmri[train_ind]
@@ -88,7 +87,7 @@ single_sub_train = single_sub[train_ind]
 
 sub_mask = single_sub_train == args.subject
 embeds_single_train = embeds_single_train[sub_mask][:num_samples]
-single_sub_fmri_train = single_sub_fmri_train[sub_mask][:num_samples, start[idx]:end[idx]]
+single_sub_fmri_train = single_sub_fmri_train[sub_mask][:num_samples, :n_vox]
 single_sub_train = np.zeros(single_sub_fmri_train.shape[0], dtype=int)
 
 embeds_single_val = embeds_single[val_ind]
@@ -97,10 +96,10 @@ single_sub_val = single_sub[val_ind]
 
 val_mask = single_sub_val == args.subject
 embeds_single_val = embeds_single_val[val_mask]
-single_sub_fmri_val = single_sub_fmri_val[val_mask, start[idx]:end[idx]]
+single_sub_fmri_val = single_sub_fmri_val[val_mask, :n_vox]
 single_sub_val = np.zeros(single_sub_fmri_val.shape[0], dtype=int)
 
-num_voxels_subjects = np.array([int(end[idx] - start[idx])])
+num_voxels_subjects = np.array([n_vox])
 
 NUM_VOXELS = int(num_voxels_subjects.sum())
 
