@@ -13,7 +13,7 @@ Implementation of:
 Environment requirements are in `env.yml`. To create the conda environment:
 ```bash
 conda env create -f env.yml
-conda activate brain-it
+conda activate enc_env
 ```
 
 ## Overview
@@ -38,7 +38,7 @@ This repository implements the **Universal Brain Encoder** (image-to-fMRI encodi
 
 Download NSD stimulus images, fMRI beta maps, and ROI masks for all 8 NSD subjects:
 ```bash
-bash data/scripts/run_all_downloads
+./data/scripts/run_all_downloads
 ```
 
 > **Note:** If you are interested in per-ROI analysis, you can download the relevant ROI masks from [this Google Drive folder](https://drive.google.com/drive/folders/1DUf3nGNNFk6YjRjQtZPfAY5N105GoGJb).
@@ -54,7 +54,7 @@ This places the encoder checkpoint in `results/saved_models/`.
 
 Run all data processing steps:
 ```bash
-bash data/scripts/run_all_data_processing
+./data/scripts/run_all_data_processing
 ```
 
 Or run individual steps manually:
@@ -77,7 +77,7 @@ Evaluate the encoder on the shared NSD test set (predictions + voxel correlation
 python inference/encoder_inference.py
 ```
 
-Step-by-step walkthrough: [`inference/encoder_inference.ipynb`](models/encoder_inference.ipynb).
+Step-by-step walkthrough: [`inference/encoder_inference.ipynb`](inference/encoder_inference.ipynb).
 
 Predict fMRI for a custom image array (optional ROI / hemisphere):
 ```bash

@@ -1,21 +1,19 @@
 #!/bin/bash
-# Run all NSD download scripts. A failure in one script does not stop the others.
+# Run all NSD data processing scripts in order.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOWNLOAD_DIR="${SCRIPT_DIR}/download"
+PROCESSING_DIR="${SCRIPT_DIR}/data_processing"
 
 SCRIPTS=(
-    download_imgs
-    download_roi_masks
-    download_fmri
-    download_experiment
+    prepare_imgs.py
+    prepare_fmri.py
 )
 
 failed=0
 
 for script in "${SCRIPTS[@]}"; do
     echo "=== Running ${script} ==="
-    if bash "${DOWNLOAD_DIR}/${script}"; then
+    if python "${PROCESSING_DIR}/${script}"; then
         echo "[SUCCESS] ${script}"
     else
         code=$?

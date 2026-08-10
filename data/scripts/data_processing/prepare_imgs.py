@@ -17,13 +17,12 @@ def load_from_hdf5(hdf5_path):
         hdf5_path: path to nsd_stimuli.hdf5
 
     Returns:
-        numpy array of shape (N, 256, 256, 3), dtype uint8
+        numpy array of shape (N, H, W, 3), dtype uint8
     """
     print(f"Loading images from {hdf5_path}...")
     with h5py.File(hdf5_path, "r") as f:
         images = f["imgBrick"][:]
     print(f"  Loaded shape: {images.shape}, dtype: {images.dtype}")
-    images = resize_images(images, (256, 256))
     return images
 
 

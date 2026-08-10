@@ -6,7 +6,7 @@ from scipy.io import loadmat
 
 # ── Paths (relative to this script) ───────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).resolve().parent
-NSD_DATA = SCRIPT_DIR.parent / "nsd_data"
+NSD_DATA = SCRIPT_DIR.parent.parent / "nsd_data"
 
 RAW_FMRI_DIR   = str(NSD_DATA / "raw_fmri")
 ROI_MASKS_DIR  = str(NSD_DATA / "roi_masks")
@@ -47,7 +47,7 @@ for s in range(1, 9):
         # concatenate hemispheres and z-score across voxels
         Y_i = np.concatenate([lh, rh], axis=1)
         Y_i = (Y_i - Y_i.mean(axis=0, keepdims=True)) / Y_i.std(axis=0, keepdims=True)
-        Y_i = np.nan_to_num(Y_i)
+        Y_i = np.nan_to_num(Y_i).astype(np.float16)
         Y_sub.append(Y_i)
 
     sub_fmri[s] = np.concatenate(Y_sub)
@@ -80,8 +80,8 @@ first_ind  = vox_cumsum - vox_sub
 mult_inds = sub_to_global[0][:1000]
 
 # (image, repeat, voxel) — up to 3 repeats; padded with NaN
-single_sub_fmri = np.full((NUM_IMAGES, 3, NUM_VOXELS),              np.nan, dtype=float)
-multi_sub_fmri  = np.full((1000,       3, int(num_voxels_subjects.sum())), np.nan, dtype=float)
+single_sub_fmri = np.full((NUM_IMAGES, 3, NUM_VOXELS),              np.nan, dtype=np.float16)
+multi_sub_fmri  = np.full((1000,       3, int(num_voxels_subjects.sum())), np.nan, dtype=np.float16)
 
 single_sub_num_repeats = np.zeros(NUM_IMAGES)
 multi_sub_num_repeats  = np.zeros([1000, 8])
