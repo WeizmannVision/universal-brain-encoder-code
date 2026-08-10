@@ -40,6 +40,7 @@ Download NSD stimulus images, fMRI beta maps, and ROI masks for all 8 NSD subjec
 ```bash
 ./data/scripts/run_all_downloads
 ```
+(To run bash scripts, make them executable first with `chmod +x path/to/script`.)
 
 > **Note:** If you are interested in per-ROI analysis, you can download the relevant ROI masks from [this Google Drive folder](https://drive.google.com/drive/folders/1DUf3nGNNFk6YjRjQtZPfAY5N105GoGJb).
 
