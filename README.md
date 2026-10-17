@@ -86,6 +86,8 @@ python inference/predict_fmri_for_images.py --images path/to/images.npy --subjec
 python inference/predict_fmri_for_images.py --images path/to/images.npy --region floc-faces --hemisphere both
 ```
 
+This only needs the encoder checkpoint and the ROI masks from `download_roi_masks`; the full NSD fMRI download and `fmri_v2.npz` are not required.
+
 ROI helpers live in `utils/roi_utils.py`. Region can be `full`, an ROI family (e.g. `floc-faces`), or a single ROI (e.g. `EBA`). Challenge-space ROI masks should be placed under `data/nsd_data/roi_masks/subjXX/roi_masks/` (see the Drive link in Data Download).
 
 ## Transfer Learning

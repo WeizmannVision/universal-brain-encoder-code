@@ -93,13 +93,22 @@ def predict_fmri_for_images(encoder_model, images, num_voxels_subjects, subjects
     return fmri
 
 
+def num_voxels_from_masks(roi_masks_dir):
+    """Voxels per subject (1-8), counted from the all-vertices masks as in prepare_fmri.py."""
+    num_voxels = []
+    for sub in range(1, 9):
+        lh = np.load(f"{roi_masks_dir}/sub{sub}/lh.all-vertices_fsaverage_space.npy")
+        rh = np.load(f"{roi_masks_dir}/sub{sub}/rh.all-vertices_fsaverage_space.npy")
+        num_voxels.append(int(lh.astype(bool).sum() + rh.astype(bool).sum()))
+    return np.array(num_voxels)
+
+
 def main():
     args = parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    fmri_data = np.load(DATA_DIR + "fmri_v2.npz")
-    num_voxels_subjects = fmri_data["num_voxels_subjects"].astype(int)
+    num_voxels_subjects = num_voxels_from_masks(DATA_DIR + "roi_masks")
 
     print(f"Loading images from {args.images}...")
     images = np.load(args.images)
@@ -107,7 +116,7 @@ def main():
     print(f"Loading encoder model from {args.model}...")
     torch.hub.set_dir("data/external_models/torch_hub/")
     torch.hub.load("facebookresearch/dinov2", "dinov2_vits14_reg")  # needed so encoder model can load
-    encoder_model = torch.load(args.model).eval().to(device)
+    encoder_model = torch.load(args.model, map_location=device).eval().to(device)
 
     fmri = predict_fmri_for_images(
         encoder_model, images, num_voxels_subjects, args.subjects, args.region, args.hemisphere, device
